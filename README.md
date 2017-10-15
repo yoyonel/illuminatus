@@ -7,8 +7,7 @@ import "/home/latty/Devel/screenpulse-tests/datas/sp-back02/2038/extract_2038_20
 
 ```bash
 ┏ ✔    latty@latty-G551JX   ~/Devel/illu…atus/illuminatus    hmx                                 0.06   5.02G    97%   13:42:55  
-╰─ illuminatus --db db/db.sql3 --video-format 100,acodec= import "/home/latty/Devel/screenpulse-tests/datas/sp-back02/2038" --tag 2038 --tag sp-back
-02
+╰─ illuminatus --db db/db.sql3 --video-format 100,acodec= import "/home/latty/Devel/screenpulse-tests/datas/sp-back02/2038" --tag 2038 --tag sp-back02
 ```
 Import directory containing MP4 videos and tag each entry with support ('2038') and source import ('sp-back02').
 
@@ -219,3 +218,23 @@ Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'pipe:':
 
 - https://bugs.launchpad.net/ubuntu/+source/mesa/+bug/1574354
 - https://mpv.io/manual/master/
+
+# ASCIINEMA: ScreenCast
+
+[![asciicast](https://asciinema.org/a/LpYf5QHH3op2AJR084IrThjQq.png)](https://asciinema.org/a/LpYf5QHH3op2AJR084IrThjQq)
+
+TODO: à refaire :p
+
+# DOCS/URLS
+
+
+- https://www.google.fr/search?client=ubuntu&hs=ODz&channel=fs&dcr=0&q=python+Tools+for+managing++videos&oq=python+Tools+for+managing++videos&gs_l=psy-ab.3...4858.4858.0.4989.1.1.0.0.0.0.90.90.1.1.0....0...1..64.psy-ab..0.0.0....0.ynapQcqfVnM
+- https://pypi.python.org/pypi/illuminatus/0.0.1
+- https://github.com/lmjohns3/illuminatus
+- => https://github.com/yoyonel/illuminatus
+- http://bottlepy.org/docs/dev/
+- http://click.pocoo.org/5/
+- http://click.pocoo.org/5/quickstart/#screencast-and-examples
+- http://flask.pocoo.org/docs/0.12/config/
+- https://www.google.fr/search?client=ubuntu&hs=iaK&channel=fs&dcr=0&q=pythoncharm+debug+python+package&oq=pythoncharm+debug+python+package&gs_l=psy-ab.3...7765.8489.0.8614.5.2.0.0.0.0.0.0..0.0....0...1.1.64.psy-ab..5.0.0....0.au19vp1FKpI
+- https://stackoverflow.com/questions/82875/how-to-list-the-tables-in-an-sqlite-database-file-that-was-opened-with-attach
