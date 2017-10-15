@@ -3,6 +3,7 @@ import bisect
 import click
 import collections
 import datetime
+import glob
 import hashlib
 import os
 import re
@@ -14,6 +15,59 @@ _CAMERAS = 'canon nikon kodak digital camera super powershot'.split()
 
 # EXIF tags where we should look for timestamps.
 _TIMESTAMP_KEYS = 'DateTimeOriginal CreateDate ModifyDate FileModifyDate'.split()
+
+
+def format_datetime(dt=datetime.datetime.now(), fmt="%Y-%m-%d_%H-%M-%S-%f"):
+    """
+
+    Args:
+        dt (datetime.datetime):
+        fmt (str):
+
+    Returns:
+        str:
+    Usage:
+
+    >>> format_datetime(datetime.datetime(2017, 9, 7, 10, 18, 40, 123456))
+    '2017-09-07_10-18-40-123456'
+    """
+    return dt.strftime(fmt)
+
+
+def extract_datetime_from_filename(videofp, re_pattern, dt_pattern):
+    """
+
+    Args:
+        videofp (str):
+        re_pattern (str):
+        dt_pattern (str):
+
+    Returns:
+
+    Examples:
+        >>> extract_datetime_from_filename('extract_2020_20170802_084034.mp4', \
+        re_pattern=r'(\d{4}\d{2}\d{2})_(\d{2}\d{2}\d{2})', dt_pattern='%Y%m%d_%H%M%S')
+        datetime.datetime(2017, 8, 2, 8, 40, 34)
+    """
+    return datetime.datetime.strptime(re.search(re_pattern, videofp).group(), dt_pattern)
+
+
+def extract_datetime_from_videofilename(
+        fname,
+        re_pattern=r'(\d{4}\d{2}\d{2})_(\d{2}\d{2}\d{2})',
+        dt_pattern='%Y%m%d_%H%M%S'
+):
+    """
+
+    Args:
+        fname (str):
+        re_pattern (str):
+        dt_pattern (str):
+
+    Returns:
+
+    """
+    return extract_datetime_from_filename(fname, re_pattern, dt_pattern)
 
 
 def _round_to_most_significant_digits(n, digits=1):
@@ -235,7 +289,17 @@ class Media(object):
     def save(self):
         '''Save this media item to the database.'''
         self.rec.update(self._get_record_updates())
-        self.rec['stamp'] = str(self.stamp)
+        try:
+            self.rec['stamp'] = str(self.stamp)
+        except arrow.parser.ParserError as e:
+            # no Exif informations about datetime (Create, Update, Modified, ...)
+            # click.echo('! Exception: {}'.format(repr(e)))
+            # Try to extract datetime information from the filename of the media
+            # (can work in case we use cut/segment video from (cwl_hmx for example))
+            dt_from_filename = extract_datetime_from_videofilename(self.meta['FileName'])
+            str_dt = format_datetime(dt=dt_from_filename, fmt="%Y-%m-%d %H:%M:%S")
+            self.rec['stamp'] = str_dt
+
         self.rec['meta'] = self.meta
         self.rec['tags'] = self.rebuild_tags()
         self.db.update(self.rec)

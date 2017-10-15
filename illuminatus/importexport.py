@@ -30,7 +30,7 @@ def workqueue(jobs, callback, num_workers=mp.cpu_count()):
     [w.start() for w in workers]
     for job in jobs:
         jobs_queue.put(job)
-    [jobs_queue.put(None) for w in workers]
+    [jobs_queue.put(None) for _ in workers]
     try:
         yield results_queue
     except:

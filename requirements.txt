@@ -1,0 +1,9 @@
+arrow
+click
+climate
+colorama
+colorspacious
+flask
+illuminatus
+parsimonious
+ujson

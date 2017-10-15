@@ -35,7 +35,11 @@ def query(query):
                   offset=int(request.args.get('offset', 0)),
                   limit=int(request.args.get('limit', 0)))
     return flask.jsonify(
-        items=[m.rec for m in app.config['db'].select(query, **kwargs)])
+        items=[
+            m.rec
+            for m in app.config['db'].select(query, **kwargs)
+        ]
+    )
 
 
 @app.route('/export/<string:query>', methods=['POST'])
@@ -118,3 +122,20 @@ def index():
 @app.route('/thumb/<path:path>')
 def thumb(path):
     return flask.send_from_directory(app.config['db'].root, path)
+
+
+@app.route('/thumb_by_id/<int:id>')
+def thumb_by_id(id):
+    with get_item(id) as item:
+        hash = item.path_hash
+        ############################################################
+        # TODO: pas assez dynamique, à refactorer !
+        ext = 'mp4'
+        fmt = '100x100'
+        ############################################################
+        name = '{}.{}'.format(hash[-16:], ext)
+        #############################
+        # TODO: faudrait (peut être) stocker une table de correspondance entre les IDs et les thumbs (directement).
+        # au lieu de refaire le link à la mano (en plus c'est assez instable)
+        path_root = os.path.join(str(fmt), hash[0:2], hash[2:4])
+        return flask.send_from_directory(app.config['db'].root, os.path.join(path_root, name))
