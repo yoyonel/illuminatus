@@ -394,8 +394,22 @@ class DB(object):
         t_sql = 'SELECT id, name FROM tags WHERE name IN ({})'
         tm_sql = 'SELECT tag_id, media_id FROM taggedmedia WHERE tag_id IN ({})'
 
-        s_sql = 'SELECT id FROM media WHERE stamp %s= {}'
+        # s_sql = 'SELECT id FROM media WHERE stamp %s= {}'
+        s_sql = """
+        SELECT id FROM media WHERE strftime("%Y-%m-%d %H:%M:%S", stamp)
+        {SQLITE3_OP}=
+        strftime("%Y-%m-%d %H:%M:%S", "{QUERY_STR_DATETIME}")
+        """
+
         p_sql = 'SELECT id FROM media WHERE path LIKE ?'
+
+        # 'before': datetime.datetime(2017, 12, 12, 23, 59, 59, 999999),
+        default_datetime = datetime.datetime(2017, 1, 1, 00, 00, 00, 0)
+        # defaults_datetimes = {
+        #     # 'before': datetime.datetime(2017, 12, 12, 23, 59, 59, 999999),
+        #     'before': datetime.datetime(2017, 1, 1, 00, 00, 00, 0),     # orienté pour passer les tests
+        #     'after': datetime.datetime(2017, 1, 1, 00, 00, 00, 0),
+        # }
 
         media_sets = collections.defaultdict(set)
         with self._cursor() as cur:
@@ -407,7 +421,34 @@ class DB(object):
 
             for stamp in parser.stamps:
                 direction, query = stamp.split(':', 1)
-                media_sets[stamp].update(i for i, in _fetchall(cur, s_sql % '><'[direction == 'before'], query))
+                # query = query.replace('_', ' ')
+                #####################
+                # media_sets[stamp].update(i for i, in _fetchall(cur, s_sql % '><'[direction == 'before'], query))
+                #####################
+                sqlite3_op = '><'[direction == 'before']
+                #
+                # default_datetime = defaults_datetimes[direction]
+                #
+                query = datetime.datetime.strftime(
+                    dateutil.parser.parse(
+                        query,
+                        default=default_datetime,
+                        fuzzy=True
+                    ),
+                    '%Y-%m-%d %H:%M:%S'
+                )
+                media_sets[stamp].update(
+                    i
+                    for i, in _fetchall(
+                        cur,
+                        s_sql.format(
+                            SQLITE3_OP=sqlite3_op,
+                            QUERY_STR_DATETIME=query
+                        )
+                    )
+                )
+                #####################
+
             for path in parser.paths:
                 media_sets[path].update(i for i, in _fetchall(
                     cur, p_sql, '%{}%'.format(path.split(':', 1)[1])))

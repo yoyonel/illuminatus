@@ -29,7 +29,8 @@ sqlite> SELECT id, meta FROM media LIMIT 1;
 # Import dans la base
 
 ```bash
-PYTHONPATH=. illuminatus --db db/db.sql3 \
+PYTHONPATH=. \
+    illuminatus --db db/db.sql3 \
 	--video-format '100,acodec=' \
 	import "/home/latty/Devel/screenpulse-tests/datas/sp-back02/2002/extract_2002_20170802_103*.mp4" \
 	--tag 2002 --tag sp-back02
@@ -43,6 +44,11 @@ PYTHONPATH=. illuminatus --db db/db.sql3 ls "sp-back02 & after:2017-08-02T10:30:
 PYTHONPATH=. illuminatus --db db/db.sql3 ls "2002 & sp-back02 & after:2017-08-02T10:30:00.00 & before:2017-08-02T10:40:00.00" --order tag
 ```
 
+- 2017-10-16
+```bash
+illuminatus --db db/db.sql3 ls "(2004) & before:2017-08-02T10:40:00.00 & after:2017-08-02T10:30:00.00"
+```
+
 # Delete
 
 ```bash
@@ -53,6 +59,21 @@ PYTHONPATH=. illuminatus --db db/db.sql3 \
 	--video-format '100,acodec=' \
 	import "/home/latty/Devel/screenpulse-tests/datas/sp-back02/2002/extract_2002_20170802_103*.mp4" \
 	--tag 2002 --tag sp-back02
+```
+
+- 2017-10-16
+
+```bash
+illuminatus --db db/db.sql3 rm "(2004) & before:2017-08-02T10:40:00.00 & after:2017-08-02T10:30:00.00"
+
+illuminatus --db db/db.sql3 ls "(2004) & before:2017-08-02T10:40:00.00 & after:2017-08-02T10:30:00.00"
+
+illuminatus --db db/db.sql3 \                                                                         
+        --video-format '100,acodec=' \
+        import ~/Prog/crawler_screenpulse/datas/2017-08_Records_Freebox/France2/raw/sp-back02/2004/extract_2002_20170802_103*.mp4 \
+        --tag 2004 --tag sp-back02
+
+illuminatus --db db/db.sql3 ls "(2004) & before:2017-08-02T10:40:00.00 & after:2017-08-02T10:30:00.00"
 ```
 
 # Serve
@@ -75,6 +96,14 @@ curl -s http://localhost:5555/query/$(python -c "import urllib.parse; print(urll
     "id": 410,
 ```
 
+- 2017-10-16
+
+```bash
+curl -s http://localhost:5555/query/$(python -c "import urllib.parse; print(urllib.parse.quote('2004 & after:2017-08-02T10:30:00.00 & before:2017-08-02T10:40:00.00'))") | grep "\"id\""
+    "id": 122,    
+    "id": 121,
+```
+ 
 ### Retrieve Thumb from id
 
 ```bash

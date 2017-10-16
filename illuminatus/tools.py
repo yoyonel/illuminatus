@@ -236,6 +236,10 @@ class Ffmpeg(Tool):
 
         args = []
 
+        # TODO: 'rm' peut être pas assez clean et laisse le thumb dans l'arboresence => empeche FFMPEG de faire le traitement !
+        # FFMPEG tente de ré-écrire le thumb après une nouvelle insertion et bloque car le fichier existe déjà !
+        args.extend(['-y'])
+
         if output.lower().endswith('.gif'):
             pal = 'split[x][z];[z]palettegen={}[y];[x][y]paletteuse'
             self._filters.append(pal.format(fmt.palette))
