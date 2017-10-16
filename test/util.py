@@ -19,7 +19,7 @@ VIDEO_ID = 3
 RECORDS = [
     {'path': PHOTO_PATH,
      'medium': 'photo',
-     'stamp': '2015-06-02T09:07',
+     'stamp': '2015-06-02T09:07:50.80',
      'tags': [
          {'name': 'a', 'source': illuminatus.Tag.USER, 'sort': 0},
          {'name': 'b', 'source': illuminatus.Tag.USER, 'sort': 0},

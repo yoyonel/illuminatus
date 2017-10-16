@@ -4,6 +4,7 @@ climate
 colorama
 colorspacious
 flask
-illuminatus
+nose
 parsimonious
+pytest
 ujson

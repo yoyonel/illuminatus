@@ -1,7 +1,0 @@
-sudo apt install \
-	libpython3
-	libpython3.5-dev \
-  	python-pytest \
-  	libimage-exiftool-perl \
- 	mycli \
- 	sqlite3

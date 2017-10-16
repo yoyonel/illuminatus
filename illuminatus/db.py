@@ -1,6 +1,8 @@
 import click
 import collections
 import contextlib
+import datetime
+import dateutil.parser
 import fnmatch
 import logging
 import mimetypes
@@ -391,12 +393,8 @@ class DB(object):
 
         t_sql = 'SELECT id, name FROM tags WHERE name IN ({})'
         tm_sql = 'SELECT tag_id, media_id FROM taggedmedia WHERE tag_id IN ({})'
-        # s_sql = 'SELECT id FROM media WHERE stamp %s= {}'
-        s_sql = """
-        SELECT id FROM media WHERE strftime("%Y-%m-%d %H:%M:%S", stamp) 
-        {SQLITE3_OP}= 
-        strftime("%Y-%m-%d %H:%M:%f", "{QUERY_STR_DATETIME}")
-        """
+
+        s_sql = 'SELECT id FROM media WHERE stamp %s= {}'
         p_sql = 'SELECT id FROM media WHERE path LIKE ?'
 
         media_sets = collections.defaultdict(set)
@@ -409,19 +407,7 @@ class DB(object):
 
             for stamp in parser.stamps:
                 direction, query = stamp.split(':', 1)
-                # query = query.replace('_', ' ')
-                media_sets[stamp].update(
-                    i
-                    # for i, in _fetchall(cur, s_sql % '><'[direction == 'before'], query)
-                    for i, in _fetchall(
-                        cur,
-                        s_sql.format(
-                            SQLITE3_OP='><'[direction == 'before'],
-                            QUERY_STR_DATETIME=query
-                        )
-                    )
-                )
-
+                media_sets[stamp].update(i for i, in _fetchall(cur, s_sql % '><'[direction == 'before'], query))
             for path in parser.paths:
                 media_sets[path].update(i for i, in _fetchall(
                     cur, p_sql, '%{}%'.format(path.split(':', 1)[1])))

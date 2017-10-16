@@ -1,0 +1,12 @@
+{
+  "test/media_test.py::test_photo_filters[filters0]": true,
+  "test/media_test.py::test_photo_filters[filters1]": true,
+  "test/media_test.py::test_photo_filters[filters2]": true,
+  "test/media_test.py::test_photo_filters[filters3]": true,
+  "test/media_test.py::test_photo_filters[filters4]": true,
+  "test/media_test.py::test_photo_filters[filters5]": true,
+  "test/media_test.py::test_photo_filters[filters6]": true,
+  "test/media_test.py::test_photo_filters[filters7]": true,
+  "test/media_test.py::test_photo_filters[filters8]": true,
+  "test/media_test.py::test_photo_filters[filters9]": true
+}

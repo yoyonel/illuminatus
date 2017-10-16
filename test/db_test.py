@@ -129,6 +129,10 @@ def test_select_by_path(test_db, paths, expected):
     ('after:2015', 2),
     ('before:2015 & after:2015', 0),
 
+    ('after:2015-06-02T09:06:59.99', 2),
+
+    ('before:2015-06-02T09:07:50.90 & after:2015-06-02T09:07:50.70', 1),
+
     ('path:photo', 1),
     ('path:video', 1),
 ])
